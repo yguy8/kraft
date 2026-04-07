@@ -1,3 +1,11 @@
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+
+onlyBuiltDependencies:
+  - a
+  - esbuild
+  - h
+  - p
+  - r
+  - s
