@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from "lucide-react";
+import { Home, ChevronLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useRef, useState , useEffect} from "react";
 import { useMediaQuery } from "usehooks-ts";
@@ -150,9 +150,10 @@ export const Navigation = () => {
             onClick={search.onOpen}
           />
           <Item 
-            label="Configuración"
-            icon={Settings}
-            onClick={settings.onOpen}
+            label="Inicio"
+            icon={Home}
+            onClick={() => router.push("/home")}
+            active={pathname === "/home"}
           />
           <Item 
           onClick={handleCreate}
@@ -182,6 +183,11 @@ export const Navigation = () => {
             </PopoverContent>
           </Popover>
         </div>
+        <Item 
+            label="Configuración"
+            icon={Settings}
+            onClick={settings.onOpen}
+          />
         <div
           onMouseDown={handleMouseDown}
           onClick={()=>{resetWidth}}
