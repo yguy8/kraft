@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Kraft",
-  description: "Work in your ideas",
+  description: "Donde tus ideas toman forma",
   icons:{
     icon:[
       {
