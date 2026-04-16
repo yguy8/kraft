@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, ChevronLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from "lucide-react";
+import { Home, ChevronLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash, LayoutTemplate } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useRef, useState , useEffect} from "react";
 import { useMediaQuery } from "usehooks-ts";
@@ -167,6 +167,12 @@ export const Navigation = () => {
           onClick={handleCreate}
           icon={Plus}
           label="Añade una página"
+          />
+          <div className="m-4"></div>
+          <Item 
+            label="Plantillas"
+            icon={LayoutTemplate}
+            onClick={settings.onOpen}
           />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
