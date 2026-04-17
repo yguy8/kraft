@@ -7,7 +7,8 @@ import { useTheme } from "next-themes";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
 import { useEdgeStore } from "@/lib/edgestore";
-import { useRef } from "react";
+import { useTemplates } from "@/hooks/use-templates";
+import { useEffect, useRef } from "react";
 
 interface EditorProps {
   onChange: (value: string) => void;
@@ -22,6 +23,7 @@ const Editor = ({
 }: EditorProps) => {
   const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
+  const setEditor = useTemplates((s) => s.setEditor);
 
   const handleUpload = async (file: File) => {
     const response = await edgestore.publicFiles.upload({ file });
@@ -34,6 +36,14 @@ const Editor = ({
       : undefined,
     uploadFile: handleUpload,
   });
+
+  useEffect(() => {
+    if(editor) {
+      setEditor(editor);
+    }
+
+    return () => setEditor(null);
+  }, [editor, setEditor]);
 
   const prevDocRef = useRef(editor.document);
 

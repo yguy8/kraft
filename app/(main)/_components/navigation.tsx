@@ -12,6 +12,7 @@ import { api } from "@/convex/_generated/api";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
+import { useTemplates } from "@/hooks/use-templates";
 
 import { UserItem } from "./user-item";
 import { Item } from "./item";
@@ -25,6 +26,7 @@ export const Navigation = () => {
   const search = useSearch();
   const params = useParams();
   const pathname = usePathname();
+  const templates = useTemplates();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const create = useMutation(api.documents.create);
 
@@ -34,6 +36,27 @@ export const Navigation = () => {
 
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
+  const [lastKey, setLastKey] = useState(""); //ver que pasa con esto 
+
+  useEffect(() => {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    const isTyping = 
+      e.target instanceof HTMLInputElement || 
+      e.target instanceof HTMLTextAreaElement ||
+      (e.target as HTMLElement).isContentEditable;
+    
+      if (isTyping) return;
+
+    if (e.key === "/") {
+      e.preventDefault();
+      templates.onOpen();
+    }
+  };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [templates]); 
+
 
   useEffect(() => {
     if (isMobile){
@@ -172,7 +195,8 @@ export const Navigation = () => {
           <Item 
             label="Plantillas"
             icon={LayoutTemplate}
-            onClick={settings.onOpen}
+            isTemplate
+            onClick={templates.onOpen}
           />
           <Popover>
             <PopoverTrigger className="w-full mt-4">

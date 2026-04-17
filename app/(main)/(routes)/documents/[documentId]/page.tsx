@@ -4,11 +4,12 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Toolbar } from "@/components/toolbar";
-import { use } from "react";
+import { use, useEffect } from "react";
 import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
+import { useTemplates } from "@/hooks/use-templates";
 
 interface DocumentIdPageProps {
     params: Promise<{
@@ -23,11 +24,24 @@ const DocumentIdPage = ({
 
     const resolvedParams = use(params);
 
+    const setUpdateTitle = useTemplates((s) => s.setUpdateTitle);
+
     const document = useQuery(api.documents.getById, {
         documentId: resolvedParams.documentId
     });
 
     const update = useMutation(api.documents.update);
+
+    useEffect(() => {
+        setUpdateTitle((title: string) => {
+            update({
+                id:resolvedParams.documentId,
+                title: title
+            });
+        });
+
+        return () => setUpdateTitle(() => {});
+    }, [resolvedParams.documentId, update, setUpdateTitle]);
 
     const onChange = (content: string) => {
     update({
