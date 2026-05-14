@@ -54,8 +54,8 @@ export const SettingsModal = () => {
                 {/* Sección de Plantillas */}
                 <div className="flex items-center justify-between py-2">
                     <div className="flex items-center gap-x-3">
-                        <div className="p-2 bg-orange-500/10 rounded-md">
-                            <LayoutTemplate className="h-5 w-5 text-orange-500" />
+                        <div className="p-2 bg-gray-300 dark:bg-blue-900 rounded-md">
+                            <LayoutTemplate className="h-5 w-5 text-blue-900 dark:text-gray-300" />
                         </div>
                         <div className="flex flex-col gap-y-1">
                             <Label>

@@ -52,9 +52,9 @@ export default function TemplatesPage() {
             {customTemplates && customTemplates.length < 20 && (
             <div className="flex items-center justify-center pt-4">
                 <button className="
-                group flex items-center gap-x-2 h-10 px-6  bg-zinc-900  hover:bg-zinc-800 hover:text-white  text-zinc-200 border border-zinc-800 rounded-full transition-all duration-200 text-sm font-medium">
+                group flex items-center gap-x-2 h-10 px-6  bg-zinc-900  hover:bg-zinc-800 hover:text-white  text-zinc-200 border border-zinc-800 rounded-full transition-all duration-200 text-sm font-medium dark:bg-blue-100 dark:text-zinc-900">
                 Crear plantilla 
-                <Plus className="h-4 w-4 text-zinc-200 hover:text-zinc-100 transition-colors" />
+                <Plus className="h-4 w-4 text-zinc-200 hover:text-zinc-100 transition-colors dark:text-zinc-600 dark:hover:text-zinc-700"/>
                 </button>
             </div>
             )}

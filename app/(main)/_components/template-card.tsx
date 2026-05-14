@@ -36,19 +36,19 @@ export const TemplateCard = ({
   onPreview
 }: TemplateCardProps) => {
   return (
-    <div className="group relative flex flex-col justify-between aspect-video rounded-xl border border-zinc-800 bg-zinc-200 p-5 transition-all duration-300">
+    <div className="group relative flex flex-col justify-between aspect-video rounded-xl border border-zinc-800 bg-zinc-200 dark:bg-secondary p-5 transition-all duration-300">
       
       {/* Header de la Card */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-x-3 truncate">
-          <div className="p-2 text-zinc-800">
+          <div className="p-2 text-zinc-800 dark:text-zinc-300">
             <LayoutTemplate className="h-5 w-5" />
           </div>
           <div className="flex flex-col truncate">
-            <h3 className="font-semibold text-zinc-800 truncate capitalize">
+            <h3 className="font-semibold text-zinc-800 dark:text-zinc-300 truncate capitalize">
               {title.replace("_", " ")}
             </h3>
-            <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium">
+            <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">
               {isSystem ? "De Kraft" : "Herramienta de Autor"}
             </span>
           </div>
