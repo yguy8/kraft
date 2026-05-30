@@ -1,70 +1,78 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { useTemplates } from "@/hooks/use-templates";
-import { KRAFT_TEMPLATES } from "@/lib/templates-data";
 
 export const TemplateCommand = () => {
-    const [isMounted, setIsMounted] = useState(false);
-    
-    const isOpen = useTemplates((store) => store.isOpen);
-    const onClose = useTemplates((store) => store.onClose);
-    const editor = useTemplates((store) => store.editor);
-    const onUpdateTitle = useTemplates((store) => store.onUpdateTitle);
+  const [isMounted, setIsMounted] = useState(false);
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+  const isOpen = useTemplates((store) => store.isOpen);
+  const onClose = useTemplates((store) => store.onClose);
+  const editor = useTemplates((store) => store.editor);
+  const onUpdateTitle = useTemplates((store) => store.onUpdateTitle);
 
+  //Plantillas del usuario
+  const customTemplates = useQuery(api.templates.get);
 
-    const onSelect = (id: string) => {
-        const templateData = KRAFT_TEMPLATES[id as keyof typeof KRAFT_TEMPLATES];
-        
-        if(!editor || !templateData){
-            return onClose();
-        }
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-        const newTitle = id.charAt(0).toUpperCase() + id.slice(1);
-        onUpdateTitle(newTitle);
-
-        const currentBlock = editor.getTextCursorPosition().block;
-
-        editor.insertBlocks(
-            templateData as any, 
-            currentBlock,
-            "after"
-        );
-
-        const isEmpty = Array.isArray(currentBlock.content) && currentBlock.content.length === 0;
-
-        if(isEmpty){
-            editor.removeBlocks([currentBlock]);
-        }
-
-        onClose();
-    };
-
-    if (!isMounted){
-        return null;
+  const onSelect = (template: any) => {
+    if (!editor || !template) {
+      return onClose();
     }
 
-    return(
-        <CommandDialog open={isOpen} onOpenChange={onClose}>
-            <CommandInput 
-            placeholder={`Usar plantilla...`}
-            />
-            <CommandList>
-                <CommandEmpty>No se encontráron plantillas.</CommandEmpty>
-                <CommandGroup heading="Plantillas de Kraft">
-                {Object.keys(KRAFT_TEMPLATES).map((id) => (
-                    <CommandItem key={id} onSelect={() => onSelect(id)}>
-                        <span>{id.charAt(0).toUpperCase() + id.slice(1)}</span>
-                    </CommandItem>
-                ))}
-                </CommandGroup>
-            </CommandList>
-        </CommandDialog>
-    )
-}
+    const newTitle = template.title.charAt(0).toUpperCase() + template.title.slice(1);
+    onUpdateTitle(newTitle);
+
+    const currentBlock = editor.getTextCursorPosition().block;
+
+    // El contenido viene como string JSON → parsearlo
+    const blocks = JSON.parse(template.content);
+
+    editor.insertBlocks(blocks, currentBlock, "after");
+
+    const isEmpty = Array.isArray(currentBlock.content) && currentBlock.content.length === 0;
+    if (isEmpty) {
+      editor.removeBlocks([currentBlock]);
+    }
+
+    onClose();
+  };
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return (
+    <CommandDialog open={isOpen} onOpenChange={onClose}>
+      <CommandInput placeholder="Usar plantilla..." />
+      <CommandList>
+        <CommandEmpty>No se encontraron plantillas.</CommandEmpty>
+
+        {/* Grupo de plantillas del sistema
+        <CommandGroup heading="Plantillas de Kraft">
+          {systemTemplates?.map((t) => (
+            <CommandItem key={t._id} onSelect={() => onSelect(t)}>
+              <span>{t.title.charAt(0).toUpperCase() + t.title.slice(1)}</span>
+            </CommandItem>
+          ))}
+        </CommandGroup> */}
+
+        {/* Grupo de plantillas del usuario */}
+        <CommandGroup heading="Mis plantillas">
+          {customTemplates?.map((t) => (
+            <CommandItem key={t._id} onSelect={() => onSelect(t)}>
+              <span>{t.title.charAt(0).toUpperCase() + t.title.slice(1)}</span>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </CommandDialog>
+  );
+};

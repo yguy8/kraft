@@ -24,7 +24,7 @@ export const create = mutation({
       content: args.content,
       userId,
       userImage: identity.pictureUrl ?? "",
-      userName: identity.name ?? "Artesano Anónimo",
+      userName: identity.name ?? "Anónimo",
     });
 
     return template;
@@ -53,6 +53,16 @@ export const get = query({
     return templates;
   },
 });
+
+// Obtiene todas las plantillas del sistema (Kraft).
+// export const getSystemTemplates = query({
+//   handler: async (ctx) => {
+//     return await ctx.db
+//       .query("templates")
+//       .withIndex("by_user", (q) => q.eq("userId", "system"))
+//       .collect();
+//   },
+// });
 
 /**
  * Actualiza el título o el contenido de una plantilla existente.

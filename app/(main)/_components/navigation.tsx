@@ -27,7 +27,7 @@ export const Navigation = () => {
   const params = useParams();
   const pathname = usePathname();
   const templates = useTemplates();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("(max-width: 1240px)");
   const create = useMutation(api.documents.create);
 
   const isResizingRef = useRef(false);
@@ -87,7 +87,7 @@ export const Navigation = () => {
   let newWidth = event.clientX;
 
   if (newWidth < 240) newWidth = 240;
-  if (newWidth > 480) newWidth = 480;
+  if (newWidth > 380) newWidth = 380;
 
   if(sidebarRef.current && navbarRef.current){
     sidebarRef.current.style.width = `${newWidth}px`;

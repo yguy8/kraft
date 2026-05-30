@@ -1,40 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import { 
-  LayoutTemplate, 
-  MoreVertical, 
-  Trash, 
-  Pencil, 
-  Eye 
-} from "lucide-react";
-
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
+import { LayoutTemplate, MoreVertical, Trash, Pencil, Eye } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@clerk/clerk-react";
 
 interface TemplateCardProps {
   id?: string;
   title: string;
   userImage?: string;
+  userName?: string;
   isSystem?: boolean;
   onDelete?: () => void;
   onRename?: () => void;
   onPreview?: () => void;
+  onEdit?: () => void; 
 }
 
 export const TemplateCard = ({
   title,
   userImage,
-  isSystem,
   onDelete,
   onRename,
-  onPreview
+  onPreview,
+  onEdit
 }: TemplateCardProps) => {
+  const { user } = useUser();
+  const firstName = user?.firstName;
+
   return (
     <div className="group relative flex flex-col justify-between aspect-video rounded-xl border border-zinc-800 bg-zinc-200 dark:bg-secondary p-5 transition-all duration-300">
       
@@ -49,20 +43,19 @@ export const TemplateCard = ({
               {title.replace("_", " ")}
             </h3>
             <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">
-              {isSystem ? "De Kraft" : "Herramienta de Autor"}
+              {firstName}
             </span>
           </div>
         </div>
 
         {/* Acciones para plantillas de usuario */}
-        {!isSystem && (
-          <DropdownMenu>
+        <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0 text-zinc-500 hover:text-white">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40 bg-zinc-900 border-zinc-800">
+            <DropdownMenuContent align="end" className="w-40 bg-zinc-300 border-zinc-800 dark:bg-secondary">
               <DropdownMenuItem onClick={onRename} className="cursor-pointer gap-x-2">
                 <Pencil className="h-4 w-4" /> Renombrar
               </DropdownMenuItem>
@@ -71,17 +64,12 @@ export const TemplateCard = ({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )}
       </div>
 
       {/* Footer de la Card */}
       <div className="flex items-center justify-between mt-4">
         <div className="flex items-center gap-x-2">
-          {isSystem ? (
-            <div className="h-6 w-6 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
-              <span className="text-[10px] font-bold text-zinc-400">K</span>
-            </div>
-          ) : (
+          {userImage && (
             userImage && (
               <div className="relative h-6 w-6">
                 <Image 
@@ -93,28 +81,32 @@ export const TemplateCard = ({
               </div>
             )
           )}
-          <span className="text-xs text-zinc-500 italic">
-            {isSystem ? "Kraft" : "Personalizado"}
+          <span className="text-xs text-zinc-500 italic dark:text-zinc-100">
+            {firstName}  
           </span>
         </div>
 
-        <Button 
-          variant="secondary" 
-          size="sm" 
-          onClick={onPreview}
-          className="h-8 bg-zinc-700 hover:bg-zinc-500 text-white transition-colors"
-        >
-          <Eye className="h-4 w-4 mr-2" />
-          Abrir
-        </Button>
-      </div>
-
-      {/* Overlay de sistema (decorativo) */}
-      {isSystem && (
-        <div className="absolute top-2 right-2 px-2 py-0.5 rounded text-[9px] bg-zinc-800 text-zinc-400 border border-zinc-700 uppercase font-bold">
-          Por defecto
+        <div className="flex flex-col xl:flex-row justify-center md:justify-end sm:flex-row sm:gap-2">
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            onClick={onPreview}
+            className="h-8 bg-zinc-700 hover:bg-zinc-500 text-white transition-colors my-2 md:mx-3"
+          >
+            <Eye className="h-4 w-4" />
+            Ver
+          </Button>
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            onClick={onEdit}
+            className="h-8 bg-zinc-700 hover:bg-zinc-500 text-white transition-colors my-2 md:mx-3"
+          >
+            <Pencil className="h-4 w-4" />
+            Editar
+          </Button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
