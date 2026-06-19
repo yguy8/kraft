@@ -1,6 +1,5 @@
 "use client";
 
-import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
 import { useTheme } from "next-themes"; 
@@ -30,18 +29,29 @@ const Editor = ({
     return response.url;
   };
 
-  const editor: BlockNoteEditor = useCreateBlockNote({
-    initialContent: initialContent 
-      ? (JSON.parse(initialContent) as PartialBlock[]) 
-      : undefined,
+  // Bloque válido por defecto
+  const defaultBlock = [
+    { type: "paragraph", content: "" },
+  ];
+
+  let parsed = defaultBlock;
+  try {
+    const parsedContent = initialContent ? JSON.parse(initialContent) : [];
+    if (Array.isArray(parsedContent) && parsedContent.length > 0) {
+      parsed = parsedContent;
+    }
+  } catch {
+    parsed = defaultBlock;
+  }
+
+  const editor = useCreateBlockNote({
+    initialContent: parsed,
     uploadFile: handleUpload,
+    placeholder : "Escribe aquí tu contenido...",
   });
 
   useEffect(() => {
-    if(editor) {
-      setEditor(editor);
-    }
-
+    setEditor(editor);
     return () => setEditor(null);
   }, [editor, setEditor]);
 

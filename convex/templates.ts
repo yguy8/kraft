@@ -67,11 +67,12 @@ export const get = query({
 /**
  * Actualiza el título o el contenido de una plantilla existente.
  */
+
 export const update = mutation({
   args: {
     id: v.id("templates"),
-    title: v.optional(v.string()),
-    content: v.optional(v.string()),
+    title: v.string(),
+    content: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -129,5 +130,27 @@ export const remove = mutation({
     await ctx.db.delete(args.id);
 
     return existingTemplate;
+  },
+});
+
+export const getById = query({
+  args: { id: v.id("templates") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("No autenticado");
+    }
+
+    const template = await ctx.db.get(args.id);
+
+    if (!template) {
+      return null;
+    }
+
+    if (template.userId !== identity.subject) {
+      throw new Error("No autorizado");
+    }
+
+    return template;
   },
 });

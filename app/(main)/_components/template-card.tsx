@@ -5,9 +5,11 @@ import { LayoutTemplate, MoreVertical, Trash, Pencil, Eye } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/clerk-react";
+import Link from "next/link";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface TemplateCardProps {
-  id?: string;
+  id?: Id<"templates">;
   title: string;
   userImage?: string;
   userName?: string;
@@ -19,6 +21,7 @@ interface TemplateCardProps {
 }
 
 export const TemplateCard = ({
+  id,
   title,
   userImage,
   onDelete,
@@ -87,24 +90,28 @@ export const TemplateCard = ({
         </div>
 
         <div className="flex flex-col xl:flex-row justify-center md:justify-end sm:flex-row sm:gap-2">
-          <Button 
+          <Link href={`/templates/${String(id)}`}>
+            <Button 
             variant="secondary" 
             size="sm" 
             onClick={onPreview}
             className="h-8 bg-zinc-700 hover:bg-zinc-500 text-white transition-colors my-2 md:mx-3"
           >
-            <Eye className="h-4 w-4" />
-            Ver
-          </Button>
-          <Button 
+              <Eye className="h-4 w-4" />
+              Ver
+            </Button>
+          </Link>
+          <Link href={`/templates/${String(id)}/editar`}>
+            <Button 
             variant="secondary" 
             size="sm" 
             onClick={onEdit}
             className="h-8 bg-zinc-700 hover:bg-zinc-500 text-white transition-colors my-2 md:mx-3"
           >
-            <Pencil className="h-4 w-4" />
-            Editar
-          </Button>
+              <Pencil className="h-4 w-4" />
+              Editar
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
