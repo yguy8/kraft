@@ -6,9 +6,9 @@ import { ArrowLeft } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
-import { useTemplates } from "@/hooks/use-templates";
+//import { useTemplates } from "@/hooks/use-templates";
 import { Spinner } from "@/components/spinner";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -30,6 +30,46 @@ export default function EditTemplatePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("[]");
 
+  const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  const handleBack = async () => {
+    // Si ya hay timeout activo, cancélalo
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      setClickTimeout(null);
+    }
+
+    if (!title.trim()) {
+      toast.warning("Necesita tener título");
+      return;
+    }
+
+    if (!content || content.trim() === "[]" || content.trim() === "") {
+      toast.warning("Necesita tener contenido");
+      // Espera 200ms antes de eliminar automáticamente
+      const timeout = setTimeout(async () => {
+        if (!title.trim() && (!content || content.trim() === "[]" || content.trim() === "")) {
+          await removeTemplate({ id: id as any });
+          setDeleted(true);
+          toast.info("Sin contenido, se elimina automáticamente");
+          router.push("/templates");
+        }
+      }, 200);
+      setClickTimeout(timeout);
+      return;
+    }
+
+    // Si tiene título y contenido, guarda
+    await updateTemplate({
+      id: id as any,
+      title: title.trim(),
+      content: content,
+    });
+
+    toast.success("Plantilla guardada correctamente");
+    router.push("/templates");
+  };
+
   useEffect(() => {
     if (template?.title) setTitle(template.title);
     if (template?.content) setContent(template.content);
@@ -49,14 +89,33 @@ export default function EditTemplatePage() {
   }
 
   const handleCancel = async () => {
-    router.push("/templates"); 
-    await removeTemplate({ id: id as any }); 
-    setDeleted(true); 
+    if (!content || content.trim() === "" || content.trim() === "[]") {
+      // No hay contenido, eliminar directamente
+      await removeTemplate({ id: id as any });
+      setDeleted(true);
+      toast.info("Plantilla sin contenido, eliminada automáticamente");
+      router.push("/templates");
+    } else {
+      // Sí hay contenido, pedir confirmación
+      toast.warning("¿Seguro que quieres eliminarla?", {
+        action: {
+          label: "Eliminar",
+          onClick: async () => {
+            await removeTemplate({ id: id as any });
+            setDeleted(true);
+            toast.success("Plantilla eliminada");
+            router.push("/templates");
+          },
+        },
+      });
+      // Si no hace clic en "Eliminar", se conserva y no pasa nada
+    }
   };
+
 
   const handleSave = async () => {
     if (!title.trim()) {
-      toast.error("Necesita tener título");
+      toast.warning("Necesita tener título");
       return;
     }
 
@@ -65,6 +124,8 @@ export default function EditTemplatePage() {
       title: title.trim() || "Sin título",
       content: content || "[]",
     });
+
+    toast.success("Plantilla guarda")
     router.push("/templates");
   };
 
@@ -77,7 +138,7 @@ export default function EditTemplatePage() {
       {/* Botón volver */}
       <div className="flex gap-4 justify-start">
         <button
-          onClick={() => router.push("/templates")}
+          onClick={handleBack}
           className="dark:text-zinc-300 text-shadow-blue-950"
         >
           <ArrowLeft className="h-6 w-6" />

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/clerk-react";
 import Link from "next/link";
 import { Id } from "@/convex/_generated/dataModel";
+import { useState } from "react";
 
 interface TemplateCardProps {
   id?: Id<"templates">;
@@ -15,7 +16,7 @@ interface TemplateCardProps {
   userName?: string;
   isSystem?: boolean;
   onDelete?: () => void;
-  onRename?: () => void;
+  onRename?: (newTitle: string) => void;
   onPreview?: () => void;
   onEdit?: () => void; 
 }
@@ -31,6 +32,8 @@ export const TemplateCard = ({
 }: TemplateCardProps) => {
   const { user } = useUser();
   const firstName = user?.firstName;
+  const [isEditing, setIsEditing] = useState(false);
+  const [newTitle, setNewTitle] = useState(title);
 
   return (
     <div className="group relative flex flex-col justify-between aspect-video rounded-xl border border-zinc-800 bg-zinc-200 dark:bg-secondary p-5 transition-all duration-300">
@@ -42,9 +45,26 @@ export const TemplateCard = ({
             <LayoutTemplate className="h-5 w-5" />
           </div>
           <div className="flex flex-col truncate">
-            <h3 className="font-semibold text-zinc-800 dark:text-zinc-300 truncate capitalize">
-              {title.replace("_", " ")}
-            </h3>
+            {isEditing ? (
+              <input
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onBlur={() => {
+                  setIsEditing(false);
+                  if (onRename) onRename(newTitle);
+                }}
+                autoFocus //coloca el cursor 
+                className="font-semibold text-zinc-800 dark:text-zinc-300 truncate capitalize bg-transparent border-b focus:outline-none"
+              />
+            ) : (
+              <h3
+                className="font-semibold text-zinc-800 dark:text-zinc-300 truncate capitalize cursor-pointer"
+                onClick={() => setIsEditing(true)} // activa la edición al hacer click en el título
+              >
+                {title.replace("_", " ")}
+              </h3>
+            )}
             <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">
               {firstName}
             </span>
@@ -59,7 +79,15 @@ export const TemplateCard = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 bg-zinc-300 border-zinc-800 dark:bg-secondary">
-              <DropdownMenuItem onClick={onRename} className="cursor-pointer gap-x-2">
+              <DropdownMenuItem
+                onClick={() => {
+                  const newTitle = prompt("Nuevo título:", title);
+                  if (newTitle && onRename) {
+                    onRename(newTitle);
+                  }
+                }}
+                className="cursor-pointer gap-x-2"
+              >
                 <Pencil className="h-4 w-4" /> Renombrar
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onDelete} className="cursor-pointer gap-x-2 text-destructive focus:text-destructive">

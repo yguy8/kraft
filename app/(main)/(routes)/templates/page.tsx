@@ -6,6 +6,7 @@ import { TemplateCard } from "../../_components/template-card";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function TemplatesPage() {
   const customTemplates = useQuery(api.templates.get);
@@ -25,8 +26,11 @@ const handleCreate = async () => {
       content: JSON.stringify([]),
     });
 
+    toast.success("Plantilla creada")
     await router.push(`/templates/${newId}/editar`);
-  } finally {
+  } catch (err) {
+    toast.error("Error al crear plantilla")
+  }finally {
     setCreating(false);
   }
 };
