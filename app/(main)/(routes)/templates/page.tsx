@@ -9,7 +9,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function TemplatesPage() {
-  const customTemplates = useQuery(api.templates.get);
+  const customTemplates = useQuery(api.templates.get)?.map(t => ({
+  ...t,
+  templateId: t._id,
+}));
   const removeTemplate = useMutation(api.templates.remove);
   const updateTemplate = useMutation(api.templates.update);
   const createTemplate = useMutation(api.templates.create);
@@ -46,13 +49,13 @@ const handleCreate = async () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {customTemplates?.map((t) => (
               <TemplateCard 
-                key={t._id}
-                id={t._id}
+                key={t.templateId}
+                id={t.templateId}
                 title={t.title}
                 userImage={t.userImage}
                 userName={t.userName}
-                onRename={() => updateTemplate({ id: t._id, title: "Nuevo título", content: t.content })}
-                onDelete={() => removeTemplate({ id: t._id })}
+                onRename={() => updateTemplate({ id: t.templateId, title: "Nuevo título", content: t.content })}
+                onDelete={() => removeTemplate({ id: t.templateId })}
               />
             ))}
 

@@ -70,7 +70,7 @@ export const get = query({
 
 export const update = mutation({
   args: {
-    id: v.id("templates"),
+    templateId: v.id("templates"),
     title: v.string(),
     content: v.string(),
   },
@@ -82,7 +82,7 @@ export const update = mutation({
     }
 
     const userId = identity.subject;
-    const existingTemplate = await ctx.db.get(args.id);
+    const existingTemplate = await ctx.db.get(args.templateId);
 
     if (!existingTemplate) {
       throw new Error("Plantilla no encontrada");
@@ -93,7 +93,7 @@ export const update = mutation({
     }
 
     // Actualiza los datos del usuario por si cambiaron en Clerk
-    const template = await ctx.db.patch(args.id, {
+    const template = await ctx.db.patch(args.templateId, {
       title: args.title ?? existingTemplate.title,
       content: args.content ?? existingTemplate.content,
       userImage: identity.pictureUrl ?? existingTemplate.userImage,
@@ -108,7 +108,7 @@ export const update = mutation({
  * Elimina una plantilla del taller.
  */
 export const remove = mutation({
-  args: { id: v.id("templates") },
+  args: { templateId: v.id("templates") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -117,7 +117,7 @@ export const remove = mutation({
     }
 
     const userId = identity.subject;
-    const existingTemplate = await ctx.db.get(args.id);
+    const existingTemplate = await ctx.db.get(args.templateId);
 
     if (!existingTemplate) {
       throw new Error("Plantilla no encontrada");
@@ -127,21 +127,21 @@ export const remove = mutation({
       throw new Error("No autorizado");
     }
 
-    await ctx.db.delete(args.id);
+    await ctx.db.delete(args.templateId);
 
     return existingTemplate;
   },
 });
 
 export const getById = query({
-  args: { id: v.id("templates") },
+  args: { templateId: v.id("templates") },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error("No autenticado");
     }
 
-    const template = await ctx.db.get(args.id);
+    const template = await ctx.db.get(args.templateId);
 
     if (!template) {
       return null;

@@ -25,9 +25,10 @@ export const TrashBox = () => {
         return document.title.toLowerCase().includes(search.toLowerCase());
     });
 
-    const onClick = (documentId: string) => {
+    const onClick = (documentId: Id<"documents">) => {
         router.push(`/documents/${documentId}`);
     };
+
 
     const onRestore = (
         event: React.MouseEvent<HTMLDivElement>,
@@ -43,21 +44,21 @@ export const TrashBox = () => {
         });
     };
 
-    const onRemove = (
-        documentId: Id<"documents">,
-    ) => {
-        const promise = remove({ id: documentId });
+    const onRemove = (documentId: Id<"documents">) => {
+        const promise = remove({ id: documentId })
+            .then(() => {
+            if (params.documentId === documentId) {
+                router.push("/documents");
+            }
+            });
 
         toast.promise(promise, {
             loading: "Borrando nota...",
             success: "Nota borrada",
             error: "Error al borrar nota"
         });
-
-        if (params.documentId === documentId){
-            router.push("/documents");
-        }
     };
+
 
     if (documents === undefined){
         return(

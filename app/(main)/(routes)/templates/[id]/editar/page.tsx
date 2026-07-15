@@ -21,7 +21,7 @@ export default function EditTemplatePage() {
 
   const template = useQuery(
     api.templates.getById,
-    deleted ? "skip" : { id: id as any } 
+    deleted ? "skip" : { templateId: id as any } 
   );
 
   const updateTemplate = useMutation(api.templates.update);
@@ -49,7 +49,7 @@ export default function EditTemplatePage() {
       // Espera 200ms antes de eliminar automáticamente
       const timeout = setTimeout(async () => {
         if (!title.trim() && (!content || content.trim() === "[]" || content.trim() === "")) {
-          await removeTemplate({ id: id as any });
+          await removeTemplate({ templateId: id as any });
           setDeleted(true);
           toast.info("Sin contenido, se elimina automáticamente");
           router.push("/templates");
@@ -61,7 +61,7 @@ export default function EditTemplatePage() {
 
     // Si tiene título y contenido, guarda
     await updateTemplate({
-      id: id as any,
+      templateId: id as any,
       title: title.trim(),
       content: content,
     });
@@ -91,7 +91,7 @@ export default function EditTemplatePage() {
   const handleCancel = async () => {
     if (!content || content.trim() === "" || content.trim() === "[]") {
       // No hay contenido, eliminar directamente
-      await removeTemplate({ id: id as any });
+      await removeTemplate({ templateId: id as any });
       setDeleted(true);
       toast.info("Plantilla sin contenido, eliminada automáticamente");
       router.push("/templates");
@@ -101,7 +101,7 @@ export default function EditTemplatePage() {
         action: {
           label: "Eliminar",
           onClick: async () => {
-            await removeTemplate({ id: id as any });
+            await removeTemplate({ templateId: id as any });
             setDeleted(true);
             toast.success("Plantilla eliminada");
             router.push("/templates");
@@ -120,7 +120,7 @@ export default function EditTemplatePage() {
     }
 
     await updateTemplate({
-      id: id as any,
+      templateId: id as any,
       title: title.trim() || "Sin título",
       content: content || "[]",
     });

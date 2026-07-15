@@ -24,16 +24,16 @@ export const Menu = ({
     const archive = useMutation(api.documents.archive);
 
     const onArchive = () => {
-        const promise = archive({ id: documentId})
+        const promise = archive({ id: documentId })
+            .then(() => router.push("/documents"));
 
         toast.promise(promise, {
             loading: "Moviendo a papelera...",
             success: "Movido a la papelera",
             error: "Error al mover a la papelera"
         });
-
-        router.push("/documents");
     };
+
 
     return(
         <DropdownMenu>

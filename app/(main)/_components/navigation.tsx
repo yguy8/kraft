@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, ChevronLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash, LayoutTemplate } from "lucide-react";
+import { Home, ChevronLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash, LayoutTemplate, Github, Users } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useRef, useState , useEffect} from "react";
 import { useMediaQuery } from "usehooks-ts";
@@ -218,6 +218,30 @@ export const Navigation = () => {
             icon={Settings}
             onClick={settings.onOpen}
           />
+        <div className="mt-auto">
+          <a 
+            href="https://portafolio-clara.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            title="Autor"
+          >
+            <Item
+              label="Kraft Dev"
+              icon={Users}
+            />
+          </a>
+          <a 
+            href="https://github.com/yguy8/kraft" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            title="Ver proyecto"
+          >
+            <Item
+              label="Proyecto"
+              icon={Github}
+            />
+          </a>
+        </div>
         <div
           onMouseDown={handleMouseDown}
           onClick={()=>{resetWidth}}

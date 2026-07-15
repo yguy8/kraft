@@ -11,7 +11,8 @@ export default defineSchema({
         content: v.optional(v.string()), //Contenido del documento 
         coverImage: v.optional(v.string()), // Imagen de portada 
         icon: v.optional(v.string()), //icono del documento 
-        isPublished: v.boolean()    //Si esta publicado el documento
+        isPublished: v.boolean(),    //Si esta publicado el documento
+        images: v.optional(v.array(v.string())),  //imagen de portada de documento
     })
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"]), 
@@ -22,6 +23,7 @@ export default defineSchema({
         content: v.string(),      // Bloques de BlockNote serializados
         userImage: v.string(),    // Para mostrar quién la editó (Clerk Image)
         userName: v.string(),     // Nombre del artesano (Clerk Name)
+        images: v.optional(v.array(v.string())),  //imagen de portada de documento
     })
     .index("by_user", ["userId"])
 });

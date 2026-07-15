@@ -49,12 +49,12 @@ export const Item = ({
         event.stopPropagation();
         if(!id) return;
         const promise = archive({ id })
-        .then(() => router.push("/documents"))
+        .then(() => router.push("/documents"));
 
         toast.promise(promise, {
             loading: "Borrando...",
             success: "Nota borrada",
-            error: "Error al borar nota."
+            error: "Error al borrar nota."
         });
     };
 
@@ -160,17 +160,16 @@ export const Item = ({
                             <Trash className="h-4 w-4 mr-2" />
                                 Borrar
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator>
+                        <DropdownMenuSeparator />
                             <div className="text-xs text-muted-foreground p-2">
-                                Última vez editado por: {user?.fullName}
+                            Última vez editado por: {user?.fullName}
                             </div>
-                        </DropdownMenuSeparator>
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <div 
                         role="button"
                         onClick={onCreate}
-                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:g-neutral-600"
+                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
                     >
                         <Plus className="h-4 w-4 text-muted-foreground dark:hover:bg-blue-900"/>
                     </div>
