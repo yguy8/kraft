@@ -3,6 +3,7 @@ import { v } from "convex/values";
 //import { title } from "process";
 
 export default defineSchema({
+    //documentos
     documents: defineTable({
         title: v.string(),      // Título del documento 
         userId: v.string(),      // Dueño del documento 
@@ -17,6 +18,7 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"]), 
 
+    //plantillas 
     templates: defineTable({
         title: v.string(),        // Nombre de la plantilla (renombrable)
         userId: v.string(),       // Dueño de la plantilla (Clerk ID)
@@ -25,5 +27,11 @@ export default defineSchema({
         userName: v.string(),     // Nombre del artesano (Clerk Name)
         images: v.optional(v.array(v.string())),  //imagen de portada de documento
     })
-    .index("by_user", ["userId"])
+    .index("by_user", ["userId"]),
+
+    //papalera
+    userSettings: defineTable({
+    userId: v.string(),
+    trashPolicy: v.string(), // "manual" | "auto" | "30" | "60" | "90"
+    }).index("by_user", ["userId"]),
 });

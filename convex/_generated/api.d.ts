@@ -10,6 +10,7 @@
 
 import type * as documents from "../documents.js";
 import type * as templates from "../templates.js";
+import type * as userSettings from "../userSettings.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +21,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   documents: typeof documents;
   templates: typeof templates;
+  userSettings: typeof userSettings;
 }>;
 
 /**

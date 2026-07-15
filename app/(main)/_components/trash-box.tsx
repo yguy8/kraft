@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
+import { useEdgeStore } from "@/lib/edgestore";
 import { toast } from "sonner";
 
 import { api } from "@/convex/_generated/api"
@@ -18,6 +19,8 @@ export const TrashBox = () => {
     const documents = useQuery(api.documents.getTrash);
     const restore = useMutation(api.documents.restore);
     const remove = useMutation(api.documents.remove);
+    const { edgestore } = useEdgeStore();
+    const clearTrash = useMutation(api.userSettings.clearTrash);
 
     const [search, setSearch] = useState("");
 
@@ -68,6 +71,31 @@ export const TrashBox = () => {
         );
     }
 
+    const handleClearTrash = async () => {
+    documents?.forEach(async (doc) => {
+        const allImages = [
+        ...(doc.images || []),
+        doc.coverImage,
+        doc.icon,
+        ].filter((url): url is string => !!url);
+
+        for (const url of allImages) {
+            try {
+                await edgestore.publicFiles.delete({ url });
+            } catch (err) {
+                toast.warning(`No se pudo borrar la imagen: ${url}`);
+            }
+        }
+    });
+
+    const promise = clearTrash({});
+    toast.promise(promise, {
+        loading: "Vaciando papelera...",
+        success: "Papelera vaciada",
+        error: "Error al vaciar papelera",
+    });
+    };
+
 
     return(
         <div className="text-sm">
@@ -113,6 +141,14 @@ export const TrashBox = () => {
                         </div>
                     </div>
                 ))}
+                        <div className="flex justify-center p-2">
+                        <ConfirmModal onConfirm={handleClearTrash}>
+                            <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 flex items-center gap-2">
+                            <Trash className="h-4 w-4" />
+                            Vaciar papelera
+                            </button>
+                        </ConfirmModal>
+                        </div>
             </div>
         </div>
     );
