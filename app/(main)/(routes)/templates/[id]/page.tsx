@@ -12,7 +12,7 @@ import { Spinner } from "@/components/spinner";
 
 export default function TemplatePage() {
   const { id } = useParams();
-  const template = useQuery(api.templates.getById, { id: id as any });
+  const template = useQuery(api.templates.getById, { templateId: id as any });
   const { resolvedTheme } = useTheme();
   const router = useRouter();
   

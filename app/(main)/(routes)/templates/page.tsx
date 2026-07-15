@@ -54,8 +54,8 @@ const handleCreate = async () => {
                 title={t.title}
                 userImage={t.userImage}
                 userName={t.userName}
-                onRename={() => updateTemplate({ id: t.templateId, title: "Nuevo título", content: t.content })}
-                onDelete={() => removeTemplate({ id: t.templateId })}
+                onRename={() => updateTemplate({ templateId: t.templateId, title: "Nuevo título", content: t.content })}
+                onDelete={() => removeTemplate({ templateId: t.templateId })}
               />
             ))}
 
