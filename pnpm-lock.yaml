@@ -36,7 +36,7 @@ importers:
         specifier: 8.3.18
         version: 8.3.18(react@19.2.3)
       '@radix-ui/react-radio-group':
-        specifier: ^1.4.3
+        specifier: 1.4.3
         version: 1.4.3(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       class-variance-authority:
         specifier: 0.7.1
