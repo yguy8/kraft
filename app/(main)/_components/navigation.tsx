@@ -198,7 +198,7 @@ export const Navigation = () => {
           <div className="flex-1 overflow-y-auto max-h-50">
               {/*fijar nota*/}
               <div className="mt-4">
-                <h4 className="px-2 text-sm font-medium text-muted-foreground/80">Notas fijadas</h4>
+                <h4 className="px-2 text-sm font-medium text-muted-foreground">Notas fijadas </h4>
                 <DocumentList pinned />
                 <div className="mt-2"></div>
                 <DocumentList/>

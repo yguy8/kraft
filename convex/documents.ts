@@ -10,7 +10,7 @@ export const archive = mutation({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("No autenticado");
+            return { ok: false, message: "No autenticado" };
         }
 
         const userId = identity.subject;
@@ -18,11 +18,11 @@ export const archive = mutation({
         const existingDocument = await ctx.db.get(args.id);
 
         if (!existingDocument){
-            throw new Error("No encontrado");
+            return{ ok: false, message :"No encontrado"} ;
         }
 
         if (existingDocument.userId !== userId){
-            throw  new Error("Sin autorización");
+            return { ok: false, message: "Sin autorización" };
         }
         
         const recursiveArchive = async (documentId: Id<"documents">) => {
@@ -96,7 +96,7 @@ export const create = mutation({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated");
+            throw new Error("No autenticado");
         }
 
         const userId = identity.subject;
@@ -117,7 +117,7 @@ export const getTrash = query({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated");
+            throw new Error("No autenticado");
         }
 
         const userId = identity.subject;
@@ -142,7 +142,7 @@ export const restore = mutation({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated");
+            return { ok: false, message: "No autenticado"};
         }
 
         const userId = identity.subject;
@@ -150,11 +150,11 @@ export const restore = mutation({
         const existingDocument = await ctx.db.get(args.id);
 
         if(!existingDocument){
-            throw new Error("No encontrado");
+            return { ok: false, message: "No encontrado"};
         }
 
         if(existingDocument.userId !== userId){
-            throw new Error("Sin autorización");
+            return { ok: false, message: "Sin autorización"};
         }
 
         const recursiveRestore = async (documentId: Id<"documents">) => {
@@ -226,7 +226,7 @@ export const getSearch = query({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated");
+            throw new Error("No autenticado");
         }
 
         const userId = identity.subject;
@@ -317,7 +317,7 @@ export const removeIcon = mutation({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated");
+            throw new Error("No autenticado");
         }
 
         const userId = identity.subject;
@@ -346,7 +346,7 @@ export const removeCoverImage = mutation({
         const identity = await ctx.auth.getUserIdentity();
 
         if(!identity){
-            throw new Error("Not authenticated");
+            throw new Error("No autenticado");
         }
 
         const userId = identity.subject;
