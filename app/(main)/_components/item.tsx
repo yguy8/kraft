@@ -179,7 +179,7 @@ export const Item = ({
                                     });
                                 }}
                                 >
-                                <div className="flex items-center text-sm">
+                                <div className="flex items-center text-sm m-2">
                                 <Trash className="h-4 w-4 mr-4 text-muted-foreground" />
                                     Borrar
                                 </div>
