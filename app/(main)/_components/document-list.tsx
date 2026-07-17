@@ -13,10 +13,12 @@ interface DocumentListProps {
     parentDocumentId?: Id<"documents">;
     level?: number;
     data?: Doc<"documents">
+    pinned?: boolean;
 }
 export const DocumentList = ({
     parentDocumentId,
-    level = 0
+    level = 0,
+    pinned,
 } : DocumentListProps) => {
     const params = useParams();
     const router = useRouter();
@@ -30,7 +32,8 @@ export const DocumentList = ({
     };
 
     const documents = useQuery(api.documents.getSidebar, {
-        parentDocument: parentDocumentId
+        parentDocument: parentDocumentId,
+        pinned,
     });
 
     const onRedirect = (documentId: string) => {
@@ -57,7 +60,7 @@ export const DocumentList = ({
                 style={{
                     paddingLeft: level ? `${(level * 12) + 25}px` : undefined
                 }}
-                className={cn("hidden text-sm font-medium text-muted-foreground/80", 
+                className={cn("ml-2 hidden text-sm font-medium text-muted-foreground/80", 
                     expanded && "last:block",
                     level === 0 && "hidden"
                 )}
@@ -76,6 +79,7 @@ export const DocumentList = ({
                         level={level}
                         onExpand={() => onExpand(document._id)}
                         expanded={expanded[document._id]}
+                        pinned={document.isPinned}
                     />
                     {expanded[document._id] && (
                         <DocumentList

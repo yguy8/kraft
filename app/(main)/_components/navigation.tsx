@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 import { cn } from "@/lib/utils";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
@@ -135,7 +136,10 @@ export const Navigation = () => {
 
   const handleCreate = () => {
     const promise = create({ title: "Sin título" })
-      .then((documentId) => router.push(`/documents/${documentId}`))
+      .then((documentId: Id<"documents">) => {
+      router.push(`/documents/${documentId}`);
+      return documentId;
+    });
 
     toast.promise(promise, {
       loading: "Creando una nota nueva...",
@@ -183,21 +187,31 @@ export const Navigation = () => {
           label="Nueva página"
           icon={PlusCircle}
             />
-        </div>
-        <div className="mt-4">
-          <DocumentList/>
-          <Item 
-          onClick={handleCreate}
-          icon={Plus}
-          label="Añade una página"
-          />
-          <div className="m-4"></div>
           <Item 
             label="Plantillas"
             icon={LayoutTemplate}
             isTemplate
             onClick={templates.onOpen}
           />
+        </div>
+        <div className="mt-4">
+          <div className="flex-1 overflow-y-auto max-h-50">
+              {/*fijar nota*/}
+              <div className="mt-4">
+                <h4 className="px-2 text-sm font-medium text-muted-foreground/80">Notas fijadas</h4>
+                <DocumentList pinned />
+                <div className="mt-2"></div>
+                <DocumentList/>
+              </div>
+          </div>
+          <Item 
+          onClick={handleCreate}
+          icon={Plus}
+          label="Añade una página"
+          />
+          <div className="mt-4"></div>
+        </div>
+        <div className="mt-auto">
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item 
@@ -212,13 +226,12 @@ export const Navigation = () => {
               <TrashBox/>
             </PopoverContent>
           </Popover>
-        </div>
         <Item 
             label="Configuración"
             icon={Settings}
             onClick={settings.onOpen}
           />
-        <div className="mt-auto">
+          <div className="mb-5"></div>
           <a 
             href="https://portafolio-clara.vercel.app/" 
             target="_blank" 

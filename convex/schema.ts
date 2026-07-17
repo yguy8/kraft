@@ -14,9 +14,11 @@ export default defineSchema({
         icon: v.optional(v.string()), //icono del documento 
         isPublished: v.boolean(),    //Si esta publicado el documento
         images: v.optional(v.array(v.string())),  //imagen de portada de documento
+        isPinned: v.optional(v.boolean()), //los documentos fijados
     })
     .index("by_user", ["userId"])
-    .index("by_user_parent", ["userId", "parentDocument"]), 
+    .index("by_user_parent", ["userId", "parentDocument"])
+    .index("by_user_pinned", ["userId", "isPinned"]),
 
     //plantillas 
     templates: defineTable({

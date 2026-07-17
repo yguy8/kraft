@@ -59,7 +59,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 bg-white dark:bg-[#252525] rounded-3xl border border-neutral-200 dark:border-neutral-800 p-6 shadow-sm">
             <div className="flex items-center gap-x-2 mb-6">
-              <Clock className="h-5 w-5 text-orange-500" />
+              <Clock className="h-5 w-5 text-blue-900  dark:text-primary" />
               <h2 className="font-semibold text-neutral-700 dark:text-neutral-300">Abierto recientemente</h2>
             </div>
             
@@ -70,8 +70,8 @@ export default function HomePage() {
                   onClick={() => router.push(`/documents/${doc._id}`)}
                   className="flex items-center p-3 hover:bg-neutral-50 dark:hover:bg-[#2F2F2F] rounded-xl cursor-pointer transition group"
                 >
-                  <div className="h-8 w-8 rounded-lg bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center mr-3">
-                    <FileIcon className="h-4 w-4 text-orange-600" />
+                  <div className="h-8 w-8 rounded-lg bg-gray-100 dark:bg-blue-900 flex items-center justify-center mr-3">
+                    <FileIcon className="h-4 w-4 text-blue-900 dark:text-primary" />
                   </div>
                   <div className="flex-1 overflow-hidden">
                     <p className="text-sm font-medium truncate">{doc.title || "Sin título"}</p>

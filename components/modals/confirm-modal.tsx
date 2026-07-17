@@ -5,6 +5,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 interface ConfirmModalProps {
     children: React.ReactNode;
     onConfirm: () => void;
+    title?: string;
+    description?: string;
 };
 
 export const ConfirmModal = ({

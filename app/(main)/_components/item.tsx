@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash } from "lucide-react";
+import { ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash, Pin } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useUser } from "@clerk/clerk-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { ConfirmModal } from "@/components/modals/confirm-modal";
 
 interface ItemProps {
     id?: Id<"documents">;
@@ -23,6 +24,7 @@ interface ItemProps {
     label: string;
     onClick?: () => void;
     icon: LucideIcon;
+    pinned?: boolean;
 };
 
 export const Item = ({
@@ -36,12 +38,14 @@ export const Item = ({
     isTemplate,
     level = 0, 
     onExpand, 
-    expanded
+    expanded, 
+    pinned
 }: ItemProps) => {
     const { user } = useUser();
     const router = useRouter();
     const create = useMutation(api.documents.create);
     const archive = useMutation(api.documents.archive);
+    const pinDocument = useMutation(api.documents.pinDocument);
 
     const onArchive = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -53,7 +57,7 @@ export const Item = ({
 
         toast.promise(promise, {
             loading: "Borrando...",
-            success: "Nota borrada",
+            success: pinned ? "Nota borrada y desanclada": "Nota borrada",
             error: "Error al borrar nota."
         });
     };
@@ -96,7 +100,8 @@ export const Item = ({
             }}
             className={cn(
                 "group min-h-27px text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
-                active && "bg-primary/5 text-primary"
+                active && "bg-primary/5 text-primary",
+                pinned? "bg-gray-200 text-primary dark:bg-blue-950" : "text-muted-foreground hover:bg-primary/5"
             )}
         >
             {!!id && (
@@ -153,19 +158,75 @@ export const Item = ({
                         side="right"
                         forceMount
                         >   
+                        
+                        {pinned ? (
+                            <DropdownMenuItem asChild>
+                                <ConfirmModal
+                                title={pinned ? "Nota anclada" : "¿Estás seguro?"}
+                                description={
+                                    pinned
+                                    ? "Esta nota está anclada. ¿Seguro que quieres borrarla?"
+                                    : "Esta acción no se puede deshacer"
+                                }
+                                onConfirm={() => {
+                                    if (!id) return;
+                                    const promise = archive({ id }).then(() => router.push("/documents"));
 
-                        <DropdownMenuItem
-                        onClick={onArchive}
-                        >
-                            <Trash className="h-4 w-4 mr-2" />
+                                    toast.promise(promise, {
+                                        loading: "Borrando...",
+                                        success: "Nota borrada y desanclada",
+                                        error: "Error al borrar nota.",
+                                    });
+                                }}
+                                >
+                                <div className="flex items-center text-sm">
+                                <Trash className="h-4 w-4 mr-4 text-muted-foreground" />
+                                    Borrar
+                                </div>
+                                </ConfirmModal>
+                            </DropdownMenuItem>
+                        ) : (
+                            <DropdownMenuItem 
+                                onClick={onArchive}
+                            >
+                                <Trash className="h-4 w-4 mr-2"/>
                                 Borrar
-                        </DropdownMenuItem>
+                            </DropdownMenuItem>
+                        )}
                         <DropdownMenuSeparator />
                             <div className="text-xs text-muted-foreground p-2">
                             Última vez editado por: {user?.fullName}
                             </div>
                         </DropdownMenuContent>
                     </DropdownMenu>
+                    <div 
+                        role="button"
+                        onClick={(e) =>{
+                            e.stopPropagation();
+                            if (!id) return;
+                            const newPinnedState = !pinned;
+
+                            const run = async () => {
+                                const result = await pinDocument({ id, pinned: newPinnedState });
+
+                                if (!result.ok) {
+                                    toast.error(result.message);
+                                    return;
+                                }
+
+                                toast.success(result.message);
+                                };
+                                
+                            run();
+                        }}
+                        className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-blue-900"
+                    >
+                        <Pin 
+                            className={`h-4 w-4 ${
+                                pinned ? "fill-chart-2 text-chart-2" : "text-muted-foreground hover:fill-primary/5"
+                            }`}
+                        />
+                    </div>
                     <div 
                         role="button"
                         onClick={onCreate}

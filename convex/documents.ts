@@ -38,6 +38,7 @@ export const archive = mutation({
                 for (const child of children){
                     await ctx.db.patch(child._id, {
                         isArchived: true,
+                        isPinned: false,
                     });
                     await recursiveArchive(child._id);
                 }
@@ -45,6 +46,7 @@ export const archive = mutation({
 
         const document = await ctx.db.patch(args.id, {
             isArchived: true,
+            isPinned: false,
         });
 
         recursiveArchive(args.id);
@@ -55,18 +57,17 @@ export const archive = mutation({
 
 export const getSidebar = query({
     args: {
-        parentDocument: v.optional(v.id("documents"))
+        parentDocument: v.optional(v.id("documents")),
+        pinned: v.optional(v.boolean()),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
-
         if(!identity){
             throw new Error("No autenticado");
         }
-
         const userId = identity.subject;
 
-        const documents = await ctx.db
+        let q = ctx.db
             .query("documents")
             .withIndex("by_user_parent", (q) =>
                 q
@@ -74,12 +75,15 @@ export const getSidebar = query({
                     .eq("parentDocument", args.parentDocument)
             )
             .filter((q) => 
-                q.eq(q.field("isArchived"), false)
-            )
-            .order("desc")
-            .collect();
+                q.eq(q.field("isArchived"), false));
+            
+            if (args.pinned){
+                q = q.filter((q) => q.eq(q.field("isPinned"), true));
+            }else {
+                q = q.filter((q) => q.or(q.eq(q.field("isPinned"), false), q.eq(q.field("isPinned"), undefined)));
+            }
 
-        return documents;
+        return await q.order("desc").collect();
     }
 })
 
@@ -385,4 +389,29 @@ export const setTrashPolicy = mutation({
       await ctx.db.insert("userSettings", { userId, trashPolicy: args.policy });
     }
   },
+});
+
+//función para fijar notas 
+
+export const pinDocument = mutation({
+    args: { id: v.id("documents"), pinned: v.boolean() },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) throw new Error("No autenticado");
+        const userId = identity.subject;
+
+        // Contar cuántas notas ya están fijadas
+        const pinnedCount = await ctx.db
+            .query("documents")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .filter((q) => q.eq(q.field("isPinned"), true))
+            .collect();
+
+        if (args.pinned && pinnedCount.length >= 5) {
+            return { ok: false, message: "Solo puedes fijar hasta 5 notas" };
+        }
+
+        await ctx.db.patch(args.id, { isPinned: args.pinned });
+        return { ok: true, message: args.pinned ? "Nota anclada" : "Nota desanclada"}
+    },
 });
