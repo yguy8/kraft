@@ -51,7 +51,7 @@ export const archive = mutation({
 
         recursiveArchive(args.id);
 
-        return document;
+        return { ok: true, message: "Nota enviada a papelera", document};
     }
 })
 
