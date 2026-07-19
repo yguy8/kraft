@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as covers from "../covers.js";
 import type * as documents from "../documents.js";
 import type * as templates from "../templates.js";
 import type * as userSettings from "../userSettings.js";
@@ -19,6 +20,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  covers: typeof covers;
   documents: typeof documents;
   templates: typeof templates;
   userSettings: typeof userSettings;

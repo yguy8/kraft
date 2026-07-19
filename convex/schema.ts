@@ -36,4 +36,12 @@ export default defineSchema({
     userId: v.string(),
     trashPolicy: v.string(), // "manual" | "auto" | "30" | "60" | "90"
     }).index("by_user", ["userId"]),
+
+    //portadas (covers)
+    covers: defineTable({
+        title: v.string(),
+        imageUrl: v.string(),
+        userId: v.string(),
+        userName: v.string(),
+    }).index("by_user", ["userId"]),
 });
