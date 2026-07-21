@@ -1,27 +1,16 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
-
-const Error = () => {
-    return(
-        <div className="h-full flex flex-col items-center justify-center space-y-4">
-            <Image
-                src="/public/error.png"
-                height="300"
-                width="300"
-                alt="Error"
-            />
-            <h2 className="text-xl font-medium">Algo salió mal</h2>
-            <Button asChild>
-                <Link href="/documents">
-                    Regresar
-                </Link>
-            </Button>
-        </div>
-    );
+export default function Error({ error, reset }: { error: Error; reset: () => void }) {
+  return (
+    <div className="h-full flex flex-col items-center justify-center space-y-4">
+      <h2 className="text-xl font-medium">Algo salió mal</h2>
+      <p className="text-gray-500">{error.message}</p>
+      <button
+        onClick={() => reset()}
+        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+      >
+        Reintentar
+      </button>
+    </div>
+  );
 }
-
-export default Error;

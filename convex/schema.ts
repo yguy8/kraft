@@ -1,5 +1,6 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { updateCoverOffset } from "./documents";
 //import { title } from "process";
 
 export default defineSchema({
@@ -15,6 +16,7 @@ export default defineSchema({
         isPublished: v.boolean(),    //Si esta publicado el documento
         images: v.optional(v.array(v.string())),  //imagen de portada de documento
         isPinned: v.optional(v.boolean()), //los documentos fijados
+        coverOffsetY: v.optional(v.number()),
     })
     .index("by_user", ["userId"])
     .index("by_user_parent", ["userId", "parentDocument"])

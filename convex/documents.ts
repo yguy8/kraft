@@ -362,7 +362,7 @@ export const removeCoverImage = mutation({
         }
 
         const document = await ctx.db.patch(args.id, {
-            coverImage: undefined
+            coverImage: undefined,
         });
 
         return document;
@@ -414,4 +414,17 @@ export const pinDocument = mutation({
         await ctx.db.patch(args.id, { isPinned: args.pinned });
         return { ok: true, message: args.pinned ? "Nota anclada" : "Nota desanclada"}
     },
+});
+
+//portadas 
+export const updateCoverOffset = mutation({
+  args: {
+    id: v.id("documents"),
+    offsetY: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, {
+      coverOffsetY: args.offsetY,
+    });
+  },
 });
