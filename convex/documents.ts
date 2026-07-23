@@ -418,3 +418,20 @@ export const pinDocument = mutation({
     },
 });
 
+// borra (limpiar) las referencias para ajustar imagen 
+
+export const cleanDocuments = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const docs = await ctx.db.query("documents").collect();
+
+    for (const doc of docs) {
+      if ("coverOffsetY" in doc) {
+        // Eliminar el campo extra
+        const { coverOffsetY, ...rest } = doc;
+        await ctx.db.replace(doc._id, rest);
+      }
+    }
+  },
+});
+
