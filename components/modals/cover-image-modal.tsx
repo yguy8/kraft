@@ -67,7 +67,7 @@ export const CoverImageModal = () => {
           </DialogTitle>
         </DialogHeader>
 
-        {/* 👇 Tabs para alternar entre subir y Kraft */}
+        {/* Tabs para alternar entre subir y Kraft */}
         <Tabs defaultValue="upload" className="w-full mt-4">
           <TabsList className="grid grid-cols-2 mb-4">
             <TabsTrigger value="upload">Subir portada</TabsTrigger>
@@ -90,23 +90,25 @@ export const CoverImageModal = () => {
 
           {/* Portadas Kraft */}
           <TabsContent value="kraft">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {systemCovers?.map((cover) => (
-                <button
-                  key={cover._id}
-                  onClick={() => onSelectKraftCover(cover.imageUrl)}
-                  className="rounded overflow-hidden border hover:ring-2 hover:ring-blue-500"
-                >
-                  <Image
-                    src={cover.imageUrl}
-                    alt={cover.title}
-                    width={200}
-                    height={120}
-                    className="object-cover w-full h-[120px]"
-                  />
-                  <p className="text-xs text-center mt-1">{cover.title}</p>
-                </button>
-              ))}
+            <div className="h-[300px] overflow-y-auto pr-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {systemCovers?.map((cover) => (
+                  <button
+                    key={cover._id}
+                    onClick={() => onSelectKraftCover(cover.imageUrl)}
+                    className="rounded overflow-hidden border hover:ring-2 hover:ring-blue-500"
+                  >
+                    <Image
+                      src={cover.imageUrl}
+                      alt={cover.title}
+                      width={200}
+                      height={120}
+                      className="object-cover w-full h-[120px]"
+                    />
+                    {/*<p className="text-xs text-center mt-1">{cover.title}</p> <-- el texto de la imagen*/}
+                  </button>
+                ))}
+              </div>
             </div>
           </TabsContent>
         </Tabs>

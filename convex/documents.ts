@@ -340,6 +340,8 @@ export const removeIcon = mutation({
     }
 });
 
+
+// quitar la portada mas no eliminarla
 export const removeCoverImage = mutation({
     args: { id: v.id("documents") },
     handler: async(ctx, args) => {
@@ -416,15 +418,3 @@ export const pinDocument = mutation({
     },
 });
 
-//portadas 
-export const updateCoverOffset = mutation({
-  args: {
-    id: v.id("documents"),
-    offsetY: v.number(),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.patch(args.id, {
-      coverOffsetY: args.offsetY,
-    });
-  },
-});
